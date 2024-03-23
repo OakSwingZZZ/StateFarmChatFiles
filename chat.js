@@ -1,6 +1,7 @@
 let inIframe = window.location !== window.parent.location;//
 console.log(`StateFarm Chat in iframe? ${inIframe}.`);
 let debug = false;
+let websocketDebugMessages = false;
 let url = debug ? "ws://localhost:3069":"wss://statefarmchat.onlypuppy7.online";
 var key = new DeviceUUID().get();
 console.log(key);
@@ -58,7 +59,7 @@ function getUpdateSettings(e) { // updates settings based on an event (iframes)
 
 function main() {
   console.log("Remove. Settings: " + JSON.stringify(settings));
-  let socket = new ReconnectingWebSocket(url, null , {debug: debug, reconnectInterval: 3000}); // Replace with your server's WebSocket URL
+  let socket = new ReconnectingWebSocket(url, null , {debug: websocketDebugMessages, reconnectInterval: 3000}); // Replace with your server's WebSocket URL
   let connected = false;
   let isAuthed = false;
 
@@ -77,6 +78,9 @@ function main() {
 
   socket.addEventListener("message", (event) => {
     let message = JSON.parse(event.data);
+    if (websocketDebugMessages){
+      console.log('Message recived > ' + event.data);
+    }
     if (message.type == "incoming") {
       addMessage(message);
     } else if (message.type == "name-change") {
