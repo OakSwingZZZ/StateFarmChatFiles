@@ -12,6 +12,7 @@ let defaultSettings = {
   name: undefined,
 };
 let settingsLoc = "SFCHAT-SETTINGS"; // occurs one other location
+let messageFunc = "SFCHAT-MESSAGE";
 let settings;
 if (inIframe) {
   window.addEventListener("message", (e) => {
@@ -77,6 +78,7 @@ function main() {
   });
 
   socket.addEventListener("message", (event) => {
+    
     let message = JSON.parse(event.data);
     if (websocketDebugMessages){
       console.log('Message recived > ' + event.data);
@@ -197,6 +199,7 @@ function main() {
       chat.scrollTop = chat.scrollHeight - chat.clientHeight;
       //console.log("scroll, " + (chat.scrollTop + chat.clientHeight >= chat.scrollHeight - 1));
     }
+    notifyClient(message);
   };
   let serverMessage = function (message) {
     let chat = document.getElementById("chat");
@@ -232,6 +235,11 @@ function main() {
       }
     }
   };
+  let notifyClient = function(message){
+    if (inIframe){
+      window.parent.postMessage(messageFunc + JSON.stringify(message), "*");  
+    }
+  }
 
   let example_message_send = { user: my_user, type: "message", message: "" };
   let incoming_example = {
