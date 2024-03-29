@@ -168,6 +168,10 @@ function main() {
       name.classList.add("mc");
       name.innerHTML += message.mcP;
     }
+    if (message.dc) {
+      name.classList.add("dc");
+      name.innerHTML += message.dcP;
+    }
     name.setAttribute("chat-user", JSON.stringify(message.user));
     name.addEventListener("click", (e) => {
       if (e.target.hasAttribute("chat-user") && isAuthed ) {
